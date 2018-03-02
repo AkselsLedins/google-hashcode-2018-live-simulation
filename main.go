@@ -7,17 +7,21 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-func createGrid(x, y int32) *imdraw.IMDraw {
+func createGrid(sizeX, sizeY int32) *imdraw.IMDraw {
 	imd := imdraw.New(nil)
 
 	imd.Color = colornames.Blueviolet
 	imd.EndShape = imdraw.RoundEndShape
-	/* create outside rect */
-	imd.Push(pixel.V(0+50, 0+50), pixel.V(0+50, 768-50))
-	imd.Push(pixel.V(1024-50, 768-50))
-	imd.Push(pixel.V(1024-50, 0+50))
-	imd.Push(pixel.V(0+50, 0+50))
-	imd.Line(1)
+	squareSize := int32(5)
+	for x := int32(0); x < sizeX; x++ {
+		for y := int32(0); y < sizeY; y++ {
+			offsetX := x*squareSize + squareSize
+			offsetY := y*squareSize + squareSize
+			imd.Push(pixel.V(float64(x+offsetX), float64(y+offsetY)))
+			imd.Push(pixel.V(float64(x+squareSize+offsetX), float64(y+squareSize+offsetY)))
+			imd.Rectangle(2)
+		}
+	}
 
 	return imd
 }
@@ -34,8 +38,8 @@ func run() {
 
 	win.Clear(colornames.Skyblue)
 
+	grid := createGrid(100, 100)
 	for !win.Closed() {
-		grid := createGrid(100, 100)
 		grid.Draw(win)
 		win.Update()
 	}

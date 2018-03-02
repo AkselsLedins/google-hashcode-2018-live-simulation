@@ -9,6 +9,9 @@ import (
 
 type Vehicle struct {
 	CurrentPosition Coordinates
+
+	CurrentRide int
+	OnRide      bool
 }
 
 func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {

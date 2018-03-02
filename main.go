@@ -42,10 +42,14 @@ func run() {
 
 	grid := createGrid(100, 100)
 	driver := new(ghashcode.Vehicle)
+	trip := new(ghashcode.Trip)
+	trip.Start = ghashcode.Coordinates{50, 50}
+	trip.End = ghashcode.Coordinates{20, 80}
 
 	for !win.Closed() {
 		grid.Draw(win)
 		driver.DrawToWindow(win)
+		trip.DrawToWindow(win)
 		win.Update()
 	}
 }

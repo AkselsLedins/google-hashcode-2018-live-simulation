@@ -1,6 +1,8 @@
 package main
 
 import (
+	ghashcode "./ghashcode"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
@@ -39,8 +41,11 @@ func run() {
 	win.Clear(colornames.Skyblue)
 
 	grid := createGrid(100, 100)
+	driver := new(ghashcode.Vehicle)
+
 	for !win.Closed() {
 		grid.Draw(win)
+		driver.DrawToWindow(win)
 		win.Update()
 	}
 }

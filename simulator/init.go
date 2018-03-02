@@ -22,15 +22,26 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 	/* create a list of vehicles */
 	var vehicles []*ghashcode.Vehicle
 
+	potentialVehicles := 0
+
 	for scanner.Scan() {
+		// we keep track of potential vehicles
+		// often candidates dont use all of their vehicles
+		potentialVehicles++
+
+		// retrieve the line
 		line := scanner.Text()
+
 		var numberOfTrips int32
 		fmt.Sscanf(line, "%d", &numberOfTrips)
-		fmt.Printf("Number of trips [%d]\n", numberOfTrips)
 		trips := make([]*ghashcode.Trip, numberOfTrips)
 		for i := int32(0); i < numberOfTrips; i++ {
 			trip := new(ghashcode.Trip)
 			trips[i] = trip
+		}
+
+		if len(trips) == 0 {
+			continue
 		}
 
 		/* instantiate a vehicle */
@@ -40,6 +51,9 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		/* add it to the vehicle list */
 		vehicles = append(vehicles, vehicle)
 	}
+
+	fmt.Printf("[INITIAL VEHICLES]: [%d]\n", len(vehicles))
+	fmt.Printf("[POTENTIAL VEHICLES]: [%d]\n", potentialVehicles)
 
 	return vehicles
 }

@@ -1,37 +1,51 @@
 package ghashcode
 
 import (
+	config "../config"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"golang.org/x/image/colornames"
 )
 
 type Trip struct {
 	Start Coordinates
 	End   Coordinates
+
+	EarliestStart int32
+	LatestFinish  int32
 }
 
 func (t *Trip) DrawToWindow(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
-	imd.Color = colornames.Orange
+	imd.Color = config.Config.UI.TripDefaultColor
 	imd.EndShape = imdraw.RoundEndShape
 
 	/* start point */
-	startX := t.Start.X*5 + 5
-	startY := t.Start.Y*5 + 5
+	startX := t.Start.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	startY := t.Start.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
 	imd.Push(pixel.V(float64(startX), float64(startY)))
 	/* second point */
-	x := (t.End.X)*5 + 5
-	y := (t.Start.Y)*5 + 5
+	x := (t.End.X)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	y := (t.Start.Y)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
 	imd.Push(pixel.V(float64(x), float64(y)))
 	/* final point */
-	endX := t.End.X*5 + 5
-	endY := t.End.Y*5 + 5
+	endX := t.End.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	endY := t.End.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
 	imd.Push(pixel.V(float64(endX), float64(endY)))
 
-	imd.Line(2)
+	imd.Line(1)
 
 	imd.Draw(win)
+}
+
+func (t *Trip) SetStart(x, y int32) {
+	t.Start.X = x
+	t.Start.Y = y
+}
+
+func (t *Trip) SetEnd(x, y int32) {
+	t.End.X = x
+	t.End.Y = y
 }

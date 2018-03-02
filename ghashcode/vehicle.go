@@ -8,8 +8,7 @@ import (
 )
 
 type Vehicle struct {
-	X int32
-	Y int32
+	CurrentPosition Coordinates
 }
 
 func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
@@ -17,14 +16,22 @@ func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
 
 	imd.Color = colornames.Red
 	imd.EndShape = imdraw.RoundEndShape
-	squareSize := int32(1)
+	squareSize := int32(5)
 
-	offsetX := v.X*squareSize + squareSize + 4
-	offsetY := v.Y*squareSize + squareSize + 4
+	offsetX := v.CurrentPosition.X*squareSize + squareSize
+	offsetY := v.CurrentPosition.Y*squareSize + squareSize
 
-	imd.Push(pixel.V(float64(v.X+offsetX), float64(v.Y+offsetY)))
-	imd.Push(pixel.V(float64(v.X+squareSize+offsetX), float64(v.Y+squareSize+offsetY)))
-	imd.Rectangle(2)
+	drawX := float64(v.CurrentPosition.X + offsetX)
+	drawY := float64(v.CurrentPosition.Y + offsetY)
+	imd.Push(pixel.V(drawX, drawY))
+	imd.Push(pixel.V(drawX, drawY))
+
+	imd.Line(2)
 
 	imd.Draw(win)
+}
+
+func (v *Vehicle) SetPosition(x, y int32) {
+	v.CurrentPosition.X = x
+	v.CurrentPosition.Y = y
 }

@@ -41,14 +41,16 @@ func run() {
 	win.Clear(colornames.Skyblue)
 
 	grid := createGrid(100, 100)
-	driver := new(ghashcode.Vehicle)
+	vehicle := new(ghashcode.Vehicle)
+	vehicle.SetPosition(1, 3)
+
 	trip := new(ghashcode.Trip)
 	trip.Start = ghashcode.Coordinates{50, 50}
 	trip.End = ghashcode.Coordinates{20, 80}
 
 	for !win.Closed() {
 		grid.Draw(win)
-		driver.DrawToWindow(win)
+		vehicle.DrawToWindow(win)
 		trip.DrawToWindow(win)
 		win.Update()
 	}

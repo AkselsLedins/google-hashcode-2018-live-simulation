@@ -7,10 +7,6 @@ import (
 	"golang.org/x/image/colornames"
 )
 
-type Coordinates struct {
-	X, Y int32
-}
-
 type Trip struct {
 	Start Coordinates
 	End   Coordinates
@@ -35,17 +31,7 @@ func (t *Trip) DrawToWindow(win *pixelgl.Window) {
 	endY := t.End.Y*5 + 5
 	imd.Push(pixel.V(float64(endX), float64(endY)))
 
-	// fmt.Printf("0) %v %v\n", startX, startY)
-	// fmt.Printf("1) %v %v\n", x, y)
-	// fmt.Printf("2) %v %v\n", endX, endY)
-	// fmt.Printf("\n")
-
 	imd.Line(2)
-	/*
-
-	   imd.Push(pixel.V(float64(v.X+squareSize+offsetX), float64(v.Y+squareSize+offsetY)))
-	   imd.Rectangle(2)
-	*/
 
 	imd.Draw(win)
 }

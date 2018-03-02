@@ -1,10 +1,10 @@
 package ghashcode
 
 import (
+	config "../config"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"golang.org/x/image/colornames"
 )
 
 type Vehicle struct {
@@ -14,7 +14,7 @@ type Vehicle struct {
 func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
 	imd := imdraw.New(nil)
 
-	imd.Color = colornames.Red
+	imd.Color = config.Config.UI.VehicleDefaultColor
 	imd.EndShape = imdraw.RoundEndShape
 	squareSize := int32(5)
 

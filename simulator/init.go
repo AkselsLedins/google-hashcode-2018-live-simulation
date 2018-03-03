@@ -101,6 +101,8 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 		trip.SetEnd(x, y)
 		trip.EarliestStart = s
 		trip.LatestFinish = f
+		trip.InProgress = false
+		trip.Taken = false
 
 		trips = append(trips, trip)
 	}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	ghashcode "../ghashcode"
 )
@@ -32,11 +34,17 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		// retrieve the line
 		line := scanner.Text()
 
-		var numberOfTrips int32
-		fmt.Sscanf(line, "%d", &numberOfTrips)
+		strs := strings.Split(line, " ")
+		numberOfTrips, _ := strconv.Atoi(strs[0])
+		if numberOfTrips == 0 {
+			continue
+		}
 		trips := make([]int32, numberOfTrips)
-		for i := int32(0); i < numberOfTrips; i++ {
-			fmt.Sscanf(line, "%d", &trips[i])
+		for i := range strs {
+			if i > 0 {
+				val, _ := strconv.Atoi(strs[i])
+				trips[i-1] = int32(val)
+			}
 		}
 
 		if len(trips) == 0 {
@@ -46,7 +54,9 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		/* instantiate a vehicle */
 		vehicle := new(ghashcode.Vehicle)
 		vehicle.SetPosition(0, 0)
+		vehicle.Enabled = true
 		vehicle.Trips = trips
+		vehicle.CurrentRide = 0
 
 		/* add it to the vehicle list */
 		vehicles = append(vehicles, vehicle)
@@ -82,7 +92,7 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 	// fmt.Sscanf("%d %d %d %d %d")
 
 	var trips []*ghashcode.Trip
-	for scanner.Scan() {
+	for id := 0; scanner.Scan(); id++ {
 		line := scanner.Text()
 		// N subsequent lines of the input file describe the individual rides, from ride 0 to ride N − 1 . Each line
 		//   contains the following integer numbers separated by single spaces:
@@ -97,6 +107,7 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 		fmt.Sscanf(line, "%d %d %d %d %d %d", &a, &b, &x, &y, &s, &f)
 
 		trip := new(ghashcode.Trip)
+		trip.ID = id
 		trip.SetStart(a, b)
 		trip.SetEnd(x, y)
 		trip.EarliestStart = s
@@ -106,6 +117,7 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 
 		trips = append(trips, trip)
 	}
+	fmt.Printf("Total trips : %d\n", len(trips))
 
 	return trips
 }

@@ -13,6 +13,8 @@ import (
 )
 
 type Trip struct {
+	ID int
+
 	Start Coordinates
 	End   Coordinates
 

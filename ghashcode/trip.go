@@ -25,40 +25,17 @@ type Trip struct {
 
 	Taken      bool
 	InProgress bool
+
+	// precomputed values
+	GraphicLine *imdraw.IMDraw
 }
 
 func (t *Trip) DrawToWindow(win *pixelgl.Window) {
 	if !t.Taken {
 		return
 	}
-	imd := imdraw.New(nil)
 
-	imd.Color = t.Color
-	imd.EndShape = imdraw.RoundEndShape
-
-	/* start point */
-	startX := t.Start.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	startY := t.Start.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-	/* second point */
-	x := (t.End.X)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	y := (t.Start.Y)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(x), float64(y)))
-	/* final point */
-	endX := t.End.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	endY := t.End.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(endX), float64(endY)))
-
-	imd.Line(2)
-
-	imd.Draw(win)
-
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-
-	imd.Line(10)
-
-	imd.Draw(win)
+	t.GraphicLine.Draw(win)
 }
 
 func (t *Trip) SetStart(x, y int32) {
@@ -88,7 +65,7 @@ func (t *Trip) WarnEarly() {
 	t.Color = colornames.Yellow
 }
 
-func NewTrip(id int, a, b, x, y, s, f int32) (t *Trip) {
+func NewTrip(id int, a, b, x, y, s, f int32) *Trip {
 	trip := new(Trip)
 
 	trip.ID = id
@@ -102,6 +79,34 @@ func NewTrip(id int, a, b, x, y, s, f int32) (t *Trip) {
 	trip.InProgress = false
 	trip.Taken = false
 	trip.Color = config.Config.UI.TripDefaultColor
+
+	// precomputed values
+	imd := imdraw.New(nil)
+
+	imd.Color = trip.Color
+	imd.EndShape = imdraw.RoundEndShape
+
+	/* start point */
+	startX := trip.Start.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	startY := trip.Start.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+	/* second point */
+	intermediateX := (trip.End.X)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	intermediateY := (trip.Start.Y)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(intermediateX), float64(intermediateY)))
+	/* final point */
+	endX := trip.End.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	endY := trip.End.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(endX), float64(endY)))
+
+	imd.Line(2)
+
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+
+	imd.Line(10)
+
+	trip.GraphicLine = imd
 
 	return trip
 }

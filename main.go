@@ -29,7 +29,7 @@ var (
 func createGrid(sizeX, sizeY int32) *imdraw.IMDraw {
 	imd := imdraw.New(nil)
 
-	imd.Color = colornames.Blueviolet
+	imd.Color = config.Config.UI.GridColor
 	imd.EndShape = imdraw.RoundEndShape
 	squareSize := config.Config.UI.SquareSize
 	for x := int32(0); x < sizeX; x++ {
@@ -46,7 +46,7 @@ func createGrid(sizeX, sizeY int32) *imdraw.IMDraw {
 }
 
 func init() {
-	frameRate = flag.Duration("frameRate", 33*time.Millisecond, "The framerate in milliseconds")
+	frameRate = flag.Duration("frameRate", 1*time.Millisecond, "The framerate in milliseconds")
 	outputFile = flag.String("o", "", "Path to your result")
 	inputFile = flag.String("i", "", "Path to the exercice input")
 	flag.Parse()
@@ -59,28 +59,41 @@ func run() {
 
 	cfg := pixelgl.WindowConfig{
 		Title:  config.Config.UI.WindowTitle,
-		Bounds: pixel.R(0, 0, 1024, 768),
+		Bounds: pixel.R(0, 0, 1500, 900),
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	grid := createGrid(100, 100)
+	// grid := createGrid(100, 100)
 
 	tick := time.Tick(*frameRate)
+
+	step := 0
+	lastStep := 0
 	for !win.Closed() {
 		// logic loop
 		frames++
 		select {
 		case <-tick:
 			win.Clear(colornames.Whitesmoke)
-			grid.Draw(win)
-			for _, vehicle := range vehicles {
-				vehicle.DrawToWindow(win)
+			// grid.Draw(win)
+			// fmt.Printf("STEP (%d)\n", step)
+			if win.JustPressed(pixelgl.KeyRight) {
 			}
+			step++
 			for _, trip := range trips {
 				trip.DrawToWindow(win)
+			}
+			for _, vehicle := range vehicles {
+				if lastStep != step {
+					vehicle.Drive(trips)
+				}
+				vehicle.DrawToWindow(win)
+			}
+			if lastStep != step {
+				lastStep = step
 			}
 		case <-second:
 			win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, frames))

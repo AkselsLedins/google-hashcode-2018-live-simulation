@@ -21,7 +21,8 @@ type Trip struct {
 
 	Color color.RGBA
 
-	Taken bool
+	Taken      bool
+	InProgress bool
 }
 
 func (t *Trip) DrawToWindow(win *pixelgl.Window) {
@@ -71,4 +72,12 @@ func (t *Trip) SetEnd(x, y int32) {
 func (t *Trip) SomeoneIsOnIt() {
 	t.Color = colornames.Cyan
 	t.Taken = true
+}
+
+func (t *Trip) StartTrip() {
+	t.Color = colornames.Olive
+}
+
+func (t *Trip) Finish() {
+	t.Color = colornames.Greenyellow
 }

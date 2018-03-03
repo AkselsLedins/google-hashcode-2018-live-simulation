@@ -89,7 +89,6 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 	scanner.Scan()
 	// skip first line at the moment
 	scanner.Text()
-	// fmt.Sscanf("%d %d %d %d %d")
 
 	var trips []*ghashcode.Trip
 	for id := 0; scanner.Scan(); id++ {
@@ -106,18 +105,11 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 		var a, b, x, y, s, f int32
 		fmt.Sscanf(line, "%d %d %d %d %d %d", &a, &b, &x, &y, &s, &f)
 
-		trip := new(ghashcode.Trip)
-		trip.ID = id
-		trip.SetStart(a, b)
-		trip.SetEnd(x, y)
-		trip.EarliestStart = s
-		trip.LatestFinish = f
-		trip.InProgress = false
-		trip.Taken = false
-
+		// initialize a new trip
+		trip := ghashcode.NewTrip(id, a, b, x, y, s, f)
+		// and add it to the trips slice
 		trips = append(trips, trip)
 	}
-	fmt.Printf("Total trips : %d\n", len(trips))
 
 	return trips
 }

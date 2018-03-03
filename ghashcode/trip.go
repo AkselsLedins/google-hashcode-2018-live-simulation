@@ -87,3 +87,21 @@ func (t *Trip) Finish() {
 func (t *Trip) WarnEarly() {
 	t.Color = colornames.Yellow
 }
+
+func NewTrip(id int, a, b, x, y, s, f int32) (t *Trip) {
+	trip := new(Trip)
+
+	trip.ID = id
+
+	trip.SetStart(a, b)
+	trip.SetEnd(x, y)
+	trip.EarliestStart = s
+	trip.LatestFinish = f
+
+	// default values
+	trip.InProgress = false
+	trip.Taken = false
+	trip.Color = config.Config.UI.TripDefaultColor
+
+	return trip
+}

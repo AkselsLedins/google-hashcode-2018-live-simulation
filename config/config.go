@@ -7,7 +7,8 @@ import (
 )
 
 type uiConfig struct {
-	SquareSize int32
+	SquareSize  int32
+	VehicleSize float64
 
 	WindowTitle string
 
@@ -27,9 +28,10 @@ var Config config
 
 func init() {
 	Config.UI.SquareSize = 1
+	Config.UI.VehicleSize = 2
 	Config.UI.BackgroundColor = colornames.Whitesmoke
-	Config.UI.TripDefaultColor = colornames.Lightsteelblue
-	Config.UI.VehicleDefaultColor = colornames.Green
+	Config.UI.TripDefaultColor = colornames.Blue
+	Config.UI.VehicleDefaultColor = colornames.Red
 	Config.UI.GridColor = colornames.Gray
 	Config.UI.WindowTitle = "Google Hashcode 2018 - Simulator!"
 }

@@ -34,10 +34,9 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 
 		var numberOfTrips int32
 		fmt.Sscanf(line, "%d", &numberOfTrips)
-		trips := make([]*ghashcode.Trip, numberOfTrips)
+		trips := make([]int32, numberOfTrips)
 		for i := int32(0); i < numberOfTrips; i++ {
-			trip := new(ghashcode.Trip)
-			trips[i] = trip
+			fmt.Sscanf(line, "%d", &trips[i])
 		}
 
 		if len(trips) == 0 {
@@ -47,6 +46,7 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		/* instantiate a vehicle */
 		vehicle := new(ghashcode.Vehicle)
 		vehicle.SetPosition(0, 0)
+		vehicle.Trips = trips
 
 		/* add it to the vehicle list */
 		vehicles = append(vehicles, vehicle)

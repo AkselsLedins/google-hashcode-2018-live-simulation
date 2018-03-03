@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"time"
 
 	config "./config"
@@ -25,6 +26,11 @@ var (
 
 	outputFile *string
 	inputFile  *string
+
+	camPos       = pixel.ZV
+	camSpeed     = 500.0
+	camZoom      = 1.0
+	camZoomSpeed = 1.2
 )
 
 func createGrid(sizeX, sizeY int32) *imdraw.IMDraw {
@@ -74,10 +80,31 @@ func run() {
 	step := 0
 	lastStep := 0
 	imd := imdraw.New(nil)
+	last := time.Now()
 	for !win.Closed() {
+		dt := time.Since(last).Seconds()
+		last = time.Now()
+
+		cam := pixel.IM.Scaled(camPos, camZoom).Moved(win.Bounds().Center().Sub(camPos))
+		win.SetMatrix(cam)
+		if win.Pressed(pixelgl.KeyLeft) {
+			camPos.X -= camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyRight) {
+			camPos.X += camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyDown) {
+			camPos.Y -= camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyUp) {
+			camPos.Y += camSpeed * dt
+		}
+		camZoom *= math.Pow(camZoomSpeed, win.MouseScroll().Y)
+
 		imd.Clear()
 		// logic loop
 		frames++
+		step++
 		select {
 		case <-tick:
 			win.Clear(colornames.Black)
@@ -85,7 +112,6 @@ func run() {
 			// fmt.Printf("STEP (%d)\n", step)
 			if win.JustPressed(pixelgl.KeyRight) {
 			}
-			step++
 			for _, trip := range trips {
 				// trip.DrawToWindow(win)
 				trip.AddToImd(imd)

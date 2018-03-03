@@ -87,6 +87,9 @@ func run() {
 				trip.DrawToWindow(win)
 			}
 			for _, vehicle := range vehicles {
+				if !vehicle.Enabled {
+					continue
+				}
 				if lastStep != step {
 					vehicle.Drive(trips)
 				}

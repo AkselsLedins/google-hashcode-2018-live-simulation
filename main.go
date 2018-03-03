@@ -73,7 +73,9 @@ func run() {
 
 	step := 0
 	lastStep := 0
+	imd := imdraw.New(nil)
 	for !win.Closed() {
+		imd.Clear()
 		// logic loop
 		frames++
 		select {
@@ -85,7 +87,8 @@ func run() {
 			}
 			step++
 			for _, trip := range trips {
-				trip.DrawToWindow(win)
+				// trip.DrawToWindow(win)
+				trip.AddToImd(imd)
 			}
 			for _, vehicle := range vehicles {
 				if !vehicle.Enabled {
@@ -94,8 +97,10 @@ func run() {
 				if lastStep != step {
 					vehicle.Drive(trips, step)
 				}
-				vehicle.DrawToWindow(win)
+				vehicle.AddToImd(imd)
 			}
+			imd.Draw(win)
+
 			if lastStep != step {
 				lastStep = step
 			}

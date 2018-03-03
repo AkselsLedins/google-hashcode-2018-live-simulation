@@ -6,7 +6,6 @@ import (
 	config "../config"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
-	"github.com/faiface/pixel/pixelgl"
 )
 
 type Vehicle struct {
@@ -18,9 +17,7 @@ type Vehicle struct {
 	Enabled     bool
 }
 
-func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
-	imd := imdraw.New(nil)
-
+func (v *Vehicle) AddToImd(imd *imdraw.IMDraw) {
 	imd.Color = config.Config.UI.VehicleDefaultColor
 	imd.EndShape = imdraw.RoundEndShape
 	squareSize := config.Config.UI.SquareSize
@@ -35,8 +32,6 @@ func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
 	imd.Push(pixel.V(drawX, drawY))
 
 	imd.Line(config.Config.UI.VehicleSize)
-
-	imd.Draw(win)
 }
 
 func (v *Vehicle) SetPosition(x, y int32) {

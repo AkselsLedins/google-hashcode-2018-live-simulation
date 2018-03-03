@@ -35,7 +35,39 @@ func (t *Trip) DrawToWindow(win *pixelgl.Window) {
 		return
 	}
 
+	t.GraphicLine.Color = t.Color
 	t.GraphicLine.Draw(win)
+}
+
+func (t *Trip) AddToImd(imd *imdraw.IMDraw) {
+	if !t.Taken {
+		return
+	}
+
+	imd.Color = t.Color
+
+	/* start point */
+	startX := t.Start.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	startY := t.Start.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+	/* second point */
+	intermediateX := (t.End.X)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	intermediateY := (t.Start.Y)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(intermediateX), float64(intermediateY)))
+	/* final point */
+	endX := t.End.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	endY := t.End.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
+	imd.Push(pixel.V(float64(endX), float64(endY)))
+
+	imd.Line(2)
+
+	imd.Color = t.Color
+	imd.EndShape = imdraw.RoundEndShape
+
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+	imd.Push(pixel.V(float64(startX), float64(startY)))
+
+	imd.Line(10)
 }
 
 func (t *Trip) SetStart(x, y int32) {
@@ -85,26 +117,6 @@ func NewTrip(id int, a, b, x, y, s, f int32) *Trip {
 
 	imd.Color = trip.Color
 	imd.EndShape = imdraw.RoundEndShape
-
-	/* start point */
-	startX := trip.Start.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	startY := trip.Start.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-	/* second point */
-	intermediateX := (trip.End.X)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	intermediateY := (trip.Start.Y)*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(intermediateX), float64(intermediateY)))
-	/* final point */
-	endX := trip.End.X*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	endY := trip.End.Y*config.Config.UI.SquareSize + config.Config.UI.SquareSize
-	imd.Push(pixel.V(float64(endX), float64(endY)))
-
-	imd.Line(2)
-
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-	imd.Push(pixel.V(float64(startX), float64(startY)))
-
-	imd.Line(10)
 
 	trip.GraphicLine = imd
 

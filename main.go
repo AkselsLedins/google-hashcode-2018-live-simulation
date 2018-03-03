@@ -92,7 +92,7 @@ func run() {
 					continue
 				}
 				if lastStep != step {
-					vehicle.Drive(trips)
+					vehicle.Drive(trips, step)
 				}
 				vehicle.DrawToWindow(win)
 			}

@@ -72,14 +72,18 @@ func (t *Trip) SetEnd(x, y int32) {
 }
 
 func (t *Trip) SomeoneIsOnIt() {
-	t.Color = colornames.Cyan
+	t.Color = colornames.Beige
 	t.Taken = true
 }
 
 func (t *Trip) StartTrip() {
-	t.Color = colornames.Olive
+	t.Color = colornames.Cyan
 }
 
 func (t *Trip) Finish() {
-	t.Color = colornames.Greenyellow
+	t.Color = colornames.Green
+}
+
+func (t *Trip) WarnEarly() {
+	t.Color = colornames.Yellow
 }

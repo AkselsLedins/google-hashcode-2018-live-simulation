@@ -44,7 +44,7 @@ func (v *Vehicle) SetPosition(x, y int32) {
 	v.CurrentPosition.Y = y
 }
 
-func (v *Vehicle) Drive(allTrips []*Trip) {
+func (v *Vehicle) Drive(allTrips []*Trip, step int) {
 	// it has done every of his trips
 	if v.CurrentRide >= len(v.Trips) {
 		return
@@ -54,6 +54,10 @@ func (v *Vehicle) Drive(allTrips []*Trip) {
 
 	if v.OnRide {
 		tripToGoTo.StartTrip()
+		if int32(step) < tripToGoTo.EarliestStart {
+			tripToGoTo.WarnEarly()
+			return
+		}
 		v.DriveOnTrip(tripToGoTo.End.X, tripToGoTo.End.Y)
 		cx, cy := v.GetPosition()
 		if cx == tripToGoTo.End.X && cy == tripToGoTo.End.Y {

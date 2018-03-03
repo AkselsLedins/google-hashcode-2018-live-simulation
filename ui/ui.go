@@ -26,3 +26,21 @@ func DrawStepNumber(win *pixelgl.Window, step int) {
 
 	basicTxt.Draw(win, pixel.IM)
 }
+
+func DrawNumberOfVehicles(win *pixelgl.Window, numberOfVehicles int) {
+	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
+	basicTxt := text.New(pixel.V(850, 670), basicAtlas)
+
+	fmt.Fprintf(basicTxt, "Number of cars  : %04d", numberOfVehicles)
+
+	basicTxt.Draw(win, pixel.IM)
+}
+
+func DrawNumberOfTrips(win *pixelgl.Window, numberOfTrips int) {
+	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
+	basicTxt := text.New(pixel.V(850, 655), basicAtlas)
+
+	fmt.Fprintf(basicTxt, "Number of trips : %04d", numberOfTrips)
+
+	basicTxt.Draw(win, pixel.IM)
+}

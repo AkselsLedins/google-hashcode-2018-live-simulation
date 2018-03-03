@@ -105,6 +105,8 @@ func run() {
 		}
 		ui.DrawStepNumber(win, step)
 		ui.DrawScore(win, 0)
+		ui.DrawNumberOfVehicles(win, len(vehicles))
+		ui.DrawNumberOfTrips(win, len(trips))
 		win.Update()
 	}
 }

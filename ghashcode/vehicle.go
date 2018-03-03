@@ -15,6 +15,7 @@ type Vehicle struct {
 	CurrentRide int
 	OnRide      bool
 	Trips       []int32
+	Enabled     bool
 }
 
 func (v *Vehicle) DrawToWindow(win *pixelgl.Window) {
@@ -45,7 +46,7 @@ func (v *Vehicle) SetPosition(x, y int32) {
 
 func (v *Vehicle) Drive(allTrips []*Trip) {
 	// it has done every of his trips
-	if v.CurrentRide > len(v.Trips) {
+	if v.CurrentRide >= len(v.Trips) {
 		return
 	}
 
@@ -57,6 +58,7 @@ func (v *Vehicle) Drive(allTrips []*Trip) {
 		cx, cy := v.GetPosition()
 		if cx == tripToGoTo.End.X && cy == tripToGoTo.End.Y {
 			tripToGoTo.Finish()
+			v.NextTrip()
 		}
 		return
 	}
@@ -67,6 +69,16 @@ func (v *Vehicle) Drive(allTrips []*Trip) {
 
 func (v *Vehicle) GetPosition() (int32, int32) {
 	return v.CurrentPosition.X, v.CurrentPosition.Y
+}
+
+func (v *Vehicle) NextTrip() {
+	// move forward next trip
+	v.CurrentRide++
+	v.OnRide = false
+	if v.CurrentRide >= len(v.Trips) {
+		// no trip ? hide the car
+		v.Enabled = false
+	}
 }
 
 func (v *Vehicle) DriveOnTrip(x, y int32) {

@@ -50,12 +50,37 @@ func (v *Vehicle) Drive(allTrips []*Trip) {
 	}
 
 	tripToGoTo := allTrips[v.Trips[v.CurrentRide]]
+
+	if v.OnRide {
+		tripToGoTo.StartTrip()
+		v.DriveOnTrip(tripToGoTo.End.X, tripToGoTo.End.Y)
+		cx, cy := v.GetPosition()
+		if cx == tripToGoTo.End.X && cy == tripToGoTo.End.Y {
+			tripToGoTo.Finish()
+		}
+		return
+	}
+
 	tripToGoTo.SomeoneIsOnIt()
 	v.DriveTo(tripToGoTo.Start.X, tripToGoTo.Start.Y)
 }
 
 func (v *Vehicle) GetPosition() (int32, int32) {
 	return v.CurrentPosition.X, v.CurrentPosition.Y
+}
+
+func (v *Vehicle) DriveOnTrip(x, y int32) {
+	cx, cy := v.GetPosition()
+	if cx > x {
+		cx--
+	} else if cx < x {
+		cx++
+	} else if cy > y {
+		cy--
+	} else if cy < y {
+		cy++
+	}
+	v.SetPosition(cx, cy)
 }
 
 func (v *Vehicle) DriveTo(x, y int32) {
@@ -94,4 +119,7 @@ func (v *Vehicle) DriveTo(x, y int32) {
 	// fmt.Printf("-\n")
 	// fmt.Printf("moving from (%d, %d) to (%d, %d)\n", cx, cy, nx, ny)
 	v.SetPosition(nx, ny)
+	if x == nx && y == ny {
+		v.OnRide = true
+	}
 }

@@ -104,6 +104,7 @@ func run() {
 			frames = 0
 		}
 		ui.DrawStepNumber(win, step)
+		ui.DrawScore(win, 0)
 		win.Update()
 	}
 }

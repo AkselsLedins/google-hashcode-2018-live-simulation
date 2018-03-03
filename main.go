@@ -7,6 +7,7 @@ import (
 
 	config "./config"
 	simulator "./simulator"
+	ui "./ui"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -59,7 +60,7 @@ func run() {
 
 	cfg := pixelgl.WindowConfig{
 		Title:  config.Config.UI.WindowTitle,
-		Bounds: pixel.R(0, 0, 1500, 900),
+		Bounds: pixel.R(0, 0, 1024, 720),
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
@@ -77,7 +78,7 @@ func run() {
 		frames++
 		select {
 		case <-tick:
-			win.Clear(colornames.Whitesmoke)
+			win.Clear(colornames.Black)
 			// grid.Draw(win)
 			// fmt.Printf("STEP (%d)\n", step)
 			if win.JustPressed(pixelgl.KeyRight) {
@@ -102,6 +103,7 @@ func run() {
 			win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, frames))
 			frames = 0
 		}
+		ui.DrawStepNumber(win, step)
 		win.Update()
 	}
 }

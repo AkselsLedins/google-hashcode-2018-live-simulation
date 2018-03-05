@@ -11,9 +11,9 @@ import (
 	ghashcode "../ghashcode"
 )
 
+// ParseOutputFile it parse the file that your program has created
+// It's the file you send to the Google Hashcode Judge System
 func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
-	fmt.Printf("[PARSING]: [%s]\n", filePath)
-
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Panicf("failed to open file: %s", err)
@@ -21,7 +21,7 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 
 	scanner := bufio.NewScanner(file)
 
-	/* create a list of vehicles */
+	// create a slice of vehicles
 	var vehicles []*ghashcode.Vehicle
 
 	potentialVehicles := 0
@@ -34,6 +34,7 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		// retrieve the line
 		line := scanner.Text()
 
+		// retrieve the trips' list
 		strs := strings.Split(line, " ")
 		numberOfTrips, _ := strconv.Atoi(strs[0])
 		if numberOfTrips == 0 {
@@ -47,18 +48,13 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 			}
 		}
 
+		// no point to store a vehicle that has no trips
 		if len(trips) == 0 {
 			continue
 		}
 
-		/* instantiate a vehicle */
-		vehicle := new(ghashcode.Vehicle)
-		vehicle.SetPosition(0, 0)
-		vehicle.Enabled = true
-		vehicle.Trips = trips
-		vehicle.CurrentRide = 0
-
-		/* add it to the vehicle list */
+		// instantiate a vehicle and append it to the vehicle slice
+		vehicle := ghashcode.NewVehicle(trips)
 		vehicles = append(vehicles, vehicle)
 	}
 
@@ -68,6 +64,8 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 	return vehicles
 }
 
+// ParseInputFile it parse the examples
+// It's the file you send to the Google Hashcode Judge System
 func ParseInputFile(filePath string) []*ghashcode.Trip {
 	fmt.Printf("[PARSING INPUT]: [%s]\n", filePath)
 

@@ -19,7 +19,6 @@ import (
 var (
 	size       *int
 	windowSize *float64
-	frameRate  *time.Duration
 
 	frames = 0
 	second = time.Tick(time.Second)
@@ -33,27 +32,7 @@ var (
 	camZoomSpeed = 1.2
 )
 
-func createGrid(sizeX, sizeY int32) *imdraw.IMDraw {
-	imd := imdraw.New(nil)
-
-	imd.Color = config.Config.UI.GridColor
-	imd.EndShape = imdraw.RoundEndShape
-	squareSize := config.Config.UI.SquareSize
-	for x := int32(0); x < sizeX; x++ {
-		for y := int32(0); y < sizeY; y++ {
-			offsetX := x*squareSize + squareSize
-			offsetY := y*squareSize + squareSize
-			imd.Push(pixel.V(float64(x+offsetX), float64(y+offsetY)))
-			imd.Push(pixel.V(float64(x+squareSize+offsetX), float64(y+squareSize+offsetY)))
-			imd.Rectangle(1)
-		}
-	}
-
-	return imd
-}
-
 func init() {
-	frameRate = flag.Duration("frameRate", 1*time.Millisecond, "The framerate in milliseconds")
 	outputFile = flag.String("o", "", "Path to your result")
 	inputFile = flag.String("i", "", "Path to the exercice input")
 	flag.Parse()
@@ -62,7 +41,6 @@ func init() {
 func run() {
 	vehicles := simulator.ParseOutputFile(*outputFile)
 	trips := simulator.ParseInputFile(*inputFile)
-	fmt.Printf("%v", trips[0])
 
 	cfg := pixelgl.WindowConfig{
 		Title:  config.Config.UI.WindowTitle,
@@ -73,9 +51,7 @@ func run() {
 		panic(err)
 	}
 
-	// grid := createGrid(100, 100)
-
-	tick := time.Tick(*frameRate)
+	tick := time.Tick(6 * time.Millisecond)
 
 	score := 0
 	step := 0
@@ -83,6 +59,8 @@ func run() {
 	imd := imdraw.New(nil)
 	last := time.Now()
 	for !win.Closed() {
+		imd.Clear()
+		frames++
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
@@ -102,19 +80,11 @@ func run() {
 		}
 		camZoom *= math.Pow(camZoomSpeed, win.MouseScroll().Y)
 
-		imd.Clear()
-		// logic loop
-		frames++
 		step++
 		select {
 		case <-tick:
 			win.Clear(colornames.Black)
-			// grid.Draw(win)
-			// fmt.Printf("STEP (%d)\n", step)
-			if win.JustPressed(pixelgl.KeyRight) {
-			}
 			for _, trip := range trips {
-				// trip.DrawToWindow(win)
 				trip.AddToImd(imd)
 			}
 			for _, vehicle := range vehicles {

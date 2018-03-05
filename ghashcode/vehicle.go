@@ -8,15 +8,24 @@ import (
 	"github.com/faiface/pixel/imdraw"
 )
 
+// Vehicle a structure which represents a vehicle in the simulation
+// Quite self-explanatory
 type Vehicle struct {
+	// current position of the vehicle
 	CurrentPosition Coordinates
 
-	CurrentRide int
-	OnRide      bool
-	Trips       []int32
-	Enabled     bool
+	// Trips an array of trips' indexes
+	// (and not their ids)
+	Trips []int32
+	// index of the current trip in Trips
+	CurrentTrip int
+	// if he is currently assigned on a trip
+	OnRide  bool
+	Enabled bool
 }
 
+// AddToImd adds to the imd batch the graphic point of the vehicle
+// We only call .draw once for all the vehicles
 func (v *Vehicle) AddToImd(imd *imdraw.IMDraw) {
 	imd.Color = config.Config.UI.VehicleDefaultColor
 	imd.EndShape = imdraw.RoundEndShape
@@ -34,18 +43,13 @@ func (v *Vehicle) AddToImd(imd *imdraw.IMDraw) {
 	imd.Line(config.Config.UI.VehicleSize)
 }
 
-func (v *Vehicle) SetPosition(x, y int32) {
-	v.CurrentPosition.X = x
-	v.CurrentPosition.Y = y
-}
-
 func (v *Vehicle) Drive(allTrips []*Trip, step int) (score int) {
 	// it has done every of his trips
-	if v.CurrentRide >= len(v.Trips) {
+	if v.CurrentTrip >= len(v.Trips) {
 		return
 	}
 
-	tripToGoTo := allTrips[v.Trips[v.CurrentRide]]
+	tripToGoTo := allTrips[v.Trips[v.CurrentTrip]]
 
 	if v.OnRide {
 		tripToGoTo.StartTrip(step)
@@ -54,8 +58,8 @@ func (v *Vehicle) Drive(allTrips []*Trip, step int) (score int) {
 			return
 		}
 		v.DriveOnTrip(tripToGoTo.End.X, tripToGoTo.End.Y)
-		cx, cy := v.GetPosition()
-		if cx == tripToGoTo.End.X && cy == tripToGoTo.End.Y {
+		currentX, currentY := v.GetPosition()
+		if currentX == tripToGoTo.End.X && currentY == tripToGoTo.End.Y {
 			score += tripToGoTo.Finish(int32(step))
 			v.NextTrip()
 			return
@@ -68,71 +72,103 @@ func (v *Vehicle) Drive(allTrips []*Trip, step int) (score int) {
 	return
 }
 
-func (v *Vehicle) GetPosition() (int32, int32) {
-	return v.CurrentPosition.X, v.CurrentPosition.Y
-}
-
+// NextTrip move forward next trip or disable the vehicle
+// if there isnt any trips left
 func (v *Vehicle) NextTrip() {
-	// move forward next trip
-	v.CurrentRide++
+	v.CurrentTrip++
 	v.OnRide = false
-	if v.CurrentRide >= len(v.Trips) {
-		// no trip ? hide the car
+
+	// no trip ? hide the car
+	if v.CurrentTrip >= len(v.Trips) {
 		v.Enabled = false
 	}
 }
 
-func (v *Vehicle) DriveOnTrip(x, y int32) {
-	cx, cy := v.GetPosition()
-	if cx > x {
-		cx--
-	} else if cx < x {
-		cx++
-	} else if cy > y {
-		cy--
-	} else if cy < y {
-		cy++
+// DriveOnTrip it will make the vehicle
+// follow the line drawn on the screen by the trip
+func (v *Vehicle) DriveOnTrip(destinationX, destinationY int32) {
+	currentX, currentY := v.GetPosition()
+	if currentX > destinationX {
+		currentX--
+	} else if currentX < destinationX {
+		currentX++
+	} else if currentY > destinationY {
+		currentY--
+	} else if currentY < destinationY {
+		currentY++
 	}
-	v.SetPosition(cx, cy)
+
+	// update vehicle position
+	v.SetPosition(currentX, currentY)
 }
 
-func (v *Vehicle) DriveTo(x, y int32) {
-	cx, cy := v.GetPosition()
-	dx := math.Abs(float64(cx - x))
-	dy := math.Abs(float64(cy - y))
+// DriveTo destinationX, destinationY coordinates
+// It will make the vehicle move in a straight line to a point
+func (v *Vehicle) DriveTo(destinationX, destinationY int32) {
+	// retrieve current position
+	currentX, currentY := v.GetPosition()
 
-	// fmt.Printf("goto %d %d\n", x, y)
-	nx := cx
-	ny := cy
+	// calculate the absolute difference between the positions
+	dx := math.Abs(float64(currentX - destinationX))
+	dy := math.Abs(float64(currentY - destinationY))
+
+	// newX and newY
+	nx := currentX
+	ny := currentY
 	if dx < dy {
-		if cy < y {
+		if currentY < destinationY {
 			ny++
-		} else if cy > y {
+		} else if currentY > destinationY {
 			ny--
 		}
 	} else if dx > dy {
-		if cx < x {
+		if currentX < destinationX {
 			nx++
-		} else if cx > x {
+		} else if currentX > destinationX {
 			nx--
 		}
 	} else if dx == dy {
-		if cx < x {
+		if currentX < destinationX {
 			nx++
-		} else if cx > x {
+		} else if currentX > destinationX {
 			nx--
-		} else if cy < y {
+		} else if currentY < destinationY {
 			ny++
-		} else if cy > y {
+		} else if currentY > destinationX {
 			ny--
 		}
 	}
-	// fmt.Printf("driving to %d, %d\n", x, y)
-	// fmt.Printf("current pos [%d, %d]", v.CurrentPosition.X, v.CurrentPosition.Y)
-	// fmt.Printf("-\n")
-	// fmt.Printf("moving from (%d, %d) to (%d, %d)\n", cx, cy, nx, ny)
+
+	// update the vehicle position
 	v.SetPosition(nx, ny)
-	if x == nx && y == ny {
+
+	// it reached his destination so we can consider him ready to start his ride
+	if destinationX == nx && destinationY == ny {
 		v.OnRide = true
 	}
+}
+
+// NewVehicle a constructor for Trip
+// takes its trips as parameters
+func NewVehicle(trips []int32) *Vehicle {
+	v := new(Vehicle)
+
+	// default values
+	v.SetPosition(0, 0)
+	v.Enabled = true
+	v.CurrentTrip = 0
+	v.Trips = trips
+
+	return v
+}
+
+// SetPosition setter for CurrentPosition
+func (v *Vehicle) SetPosition(x, y int32) {
+	v.CurrentPosition.X = x
+	v.CurrentPosition.Y = y
+}
+
+// GetPosition getter for CurrentPosition
+func (v *Vehicle) GetPosition() (int32, int32) {
+	return v.CurrentPosition.X, v.CurrentPosition.Y
 }

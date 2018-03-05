@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	ghashcode "../ghashcode"
+	ghashcode "github.com/AkselsLedins/google-hashcode-2018-live-simulation/ghashcode"
 )
 
 // ParseOutputFile it parse the file that your program has created

@@ -3,7 +3,8 @@ package ghashcode
 import (
 	"math"
 
-	config "../config"
+	config "github.com/AkselsLedins/google-hashcode-2018-live-simulation/config"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 )

@@ -1,7 +1,7 @@
 package simulator
 
 import (
-	ghashcode "../ghashcode"
+	ghashcode "github.com/AkselsLedins/google-hashcode-2018-live-simulation/ghashcode"
 
 	"github.com/faiface/pixel/imdraw"
 )

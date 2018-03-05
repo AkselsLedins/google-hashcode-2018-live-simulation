@@ -6,9 +6,9 @@ import (
 	"math"
 	"time"
 
-	config "./config"
-	simulator "./simulator"
-	ui "./ui"
+	config "github.com/AkselsLedins/google-hashcode-2018-live-simulation/config"
+	simulator "github.com/AkselsLedins/google-hashcode-2018-live-simulation/simulator"
+	ui "github.com/AkselsLedins/google-hashcode-2018-live-simulation/ui"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -118,7 +118,7 @@ func noGui() {
 	for !simulation.Ended {
 		simulation.Run(nil)
 	}
-	fmt.Printf("Score: %d in %d steps\n", simulation.Score, simulation.Step)
+	fmt.Printf("%d\n", simulation.Score)
 }
 
 func main() {

@@ -4,12 +4,11 @@ import (
 	"image/color"
 	"math"
 
-	"golang.org/x/image/colornames"
-
-	config "../config"
+	config "github.com/AkselsLedins/google-hashcode-2018-live-simulation/config"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
+	"golang.org/x/image/colornames"
 )
 
 // Trip a structure which represents a trip in the simulation

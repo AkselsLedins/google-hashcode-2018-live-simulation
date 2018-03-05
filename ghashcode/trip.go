@@ -107,9 +107,9 @@ func (t *Trip) SomeoneIsOnIt() {
 // StartTrip takes the current step as parameter
 // if we start it on time we earn the bonus points
 // a different color is assigned if we start it on time or not
-func (t *Trip) StartTrip(step int) {
+func (t *Trip) StartTrip(step int, bonus int16) {
 	if step == int(t.EarliestStart) {
-		t.Bonus += config.Config.Simulation.Bonus
+		t.Bonus += int(bonus)
 		t.Color = colornames.Gold
 		return
 	}
@@ -121,6 +121,7 @@ func (t *Trip) StartTrip(step int) {
 // a different is assigned if we end it on time or not
 func (t *Trip) Finish(step int32) int {
 	failed := false
+	// the vehicle does this even if the arrival step is later than the latest finish
 	if step > t.LatestFinish {
 		failed = true
 	}
@@ -130,6 +131,7 @@ func (t *Trip) Finish(step int32) int {
 		t.Color = colornames.Green
 		return t.Distance + t.Bonus
 	}
+	// but no points are earned by such a ride
 	t.Color = colornames.Red
 	return 0
 }

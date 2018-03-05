@@ -20,13 +20,8 @@ type uiConfig struct {
 	VehicleDefaultColor color.RGBA
 }
 
-type simulationConfig struct {
-	Bonus int
-}
-
 type config struct {
-	UI         uiConfig
-	Simulation simulationConfig
+	UI uiConfig
 }
 
 var Config config
@@ -39,6 +34,4 @@ func init() {
 	Config.UI.VehicleDefaultColor = colornames.Red
 	Config.UI.GridColor = colornames.Gray
 	Config.UI.WindowTitle = "Google Hashcode 2018 - Simulator!"
-
-	Config.Simulation.Bonus = 2
 }

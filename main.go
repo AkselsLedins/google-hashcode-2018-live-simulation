@@ -23,6 +23,8 @@ var (
 	frames = 0
 	second = time.Tick(time.Second)
 
+	noGuiFlag *bool
+
 	outputFile *string
 	inputFile  *string
 
@@ -30,18 +32,24 @@ var (
 	camSpeed     = 500.0
 	camZoom      = 1.0
 	camZoomSpeed = 1.2
+
+	simulation *simulator.Simulation
 )
 
 func init() {
+	simulation = simulator.NewSimulation()
+
 	outputFile = flag.String("o", "", "Path to your result")
 	inputFile = flag.String("i", "", "Path to the exercice input")
+	noGuiFlag = flag.Bool("noGui", false, "Run the simulation without a GUI")
+
 	flag.Parse()
+
+	simulation.ParseOutputFile(*outputFile)
+	simulation.ParseInputFile(*inputFile)
 }
 
 func run() {
-	vehicles := simulator.ParseOutputFile(*outputFile)
-	trips := simulator.ParseInputFile(*inputFile)
-
 	cfg := pixelgl.WindowConfig{
 		Title:  config.Config.UI.WindowTitle,
 		Bounds: pixel.R(0, 0, 1024, 720),
@@ -53,12 +61,10 @@ func run() {
 
 	tick := time.Tick(6 * time.Millisecond)
 
-	score := 0
-	step := 0
-	lastStep := 0
 	imd := imdraw.New(nil)
 	last := time.Now()
-	for !win.Closed() {
+
+	for !win.Closed() && !simulation.Ended {
 		imd.Clear()
 		frames++
 		dt := time.Since(last).Seconds()
@@ -66,6 +72,9 @@ func run() {
 
 		cam := pixel.IM.Scaled(camPos, camZoom).Moved(win.Bounds().Center().Sub(camPos))
 		win.SetMatrix(cam)
+		if win.JustPressed(pixelgl.KeySpace) {
+			simulation.Toggle()
+		}
 		if win.Pressed(pixelgl.KeyLeft) {
 			camPos.X -= camSpeed * dt
 		}
@@ -80,41 +89,42 @@ func run() {
 		}
 		camZoom *= math.Pow(camZoomSpeed, win.MouseScroll().Y)
 
-		step++
 		select {
 		case <-tick:
 			win.Clear(colornames.Black)
-			for _, trip := range trips {
-				trip.AddToImd(imd)
-			}
-			for _, vehicle := range vehicles {
-				if !vehicle.Enabled {
-					continue
-				}
-				if lastStep != step {
-					score += vehicle.Drive(trips, step)
-				}
-				vehicle.AddToImd(imd)
-			}
+
+			simulation.Run(imd)
+
 			imd.Draw(win)
 
-			if lastStep != step {
-				lastStep = step
-			}
 		case <-second:
 			win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, frames))
 			frames = 0
 		}
 
 		win.SetMatrix(pixel.IM)
-		ui.DrawStepNumber(win, step)
-		ui.DrawScore(win, score)
-		ui.DrawNumberOfVehicles(win, len(vehicles))
-		ui.DrawNumberOfTrips(win, len(trips))
+		ui.DrawStepNumber(win, simulation.Step)
+		ui.DrawScore(win, simulation.Score)
+		ui.DrawNumberOfVehicles(win, len(simulation.Vehicles))
+		ui.DrawNumberOfTrips(win, len(simulation.Trips))
 		win.Update()
 	}
+
+	fmt.Printf("Score: %d\n", simulation.Score)
+}
+
+func noGui() {
+	simulation.Start()
+	for !simulation.Ended {
+		simulation.Run(nil)
+	}
+	fmt.Printf("Score: %d in %d steps\n", simulation.Score, simulation.Step)
 }
 
 func main() {
+	if *noGuiFlag == true {
+		noGui()
+		return
+	}
 	pixelgl.Run(run)
 }

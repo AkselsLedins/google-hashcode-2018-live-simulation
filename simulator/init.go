@@ -13,7 +13,7 @@ import (
 
 // ParseOutputFile it parse the file that your program has created
 // It's the file you send to the Google Hashcode Judge System
-func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
+func (s *Simulation) ParseOutputFile(filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Panicf("failed to open file: %s", err)
@@ -24,13 +24,7 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 	// create a slice of vehicles
 	var vehicles []*ghashcode.Vehicle
 
-	potentialVehicles := 0
-
 	for scanner.Scan() {
-		// we keep track of potential vehicles
-		// often candidates dont use all of their vehicles
-		potentialVehicles++
-
 		// retrieve the line
 		line := scanner.Text()
 
@@ -58,17 +52,12 @@ func ParseOutputFile(filePath string) []*ghashcode.Vehicle {
 		vehicles = append(vehicles, vehicle)
 	}
 
-	fmt.Printf("[INITIAL VEHICLES]: [%d]\n", len(vehicles))
-	fmt.Printf("[POTENTIAL VEHICLES]: [%d]\n", potentialVehicles)
-
-	return vehicles
+	s.Vehicles = vehicles
 }
 
 // ParseInputFile it parse the examples
 // It's the file you send to the Google Hashcode Judge System
-func ParseInputFile(filePath string) []*ghashcode.Trip {
-	fmt.Printf("[PARSING INPUT]: [%s]\n", filePath)
-
+func (s *Simulation) ParseInputFile(filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Panicf("failed to open file: %s", err)
@@ -85,8 +74,15 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 	//   ● B – per-ride bonus for starting the ride on time (1 ≤ B ≤ 10000)
 	//   ● T – number of steps in the simulation (1 ≤ T ≤ 10 )
 	scanner.Scan()
-	// skip first line at the moment
-	scanner.Text()
+	firstLine := scanner.Text()
+
+	fmt.Sscanf(firstLine, "%d %d %d %d %d %d",
+		&s.gridRows,
+		&s.gridColumns,
+		&s.numberOfVehicles,
+		&s.numberOfRides,
+		&s.perRideBonus,
+		&s.numberOfStepsInTheSimulation)
 
 	var trips []*ghashcode.Trip
 	for id := 0; scanner.Scan(); id++ {
@@ -109,5 +105,5 @@ func ParseInputFile(filePath string) []*ghashcode.Trip {
 		trips = append(trips, trip)
 	}
 
-	return trips
+	s.Trips = trips
 }

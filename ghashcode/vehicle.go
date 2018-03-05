@@ -43,32 +43,43 @@ func (v *Vehicle) AddToImd(imd *imdraw.IMDraw) {
 	imd.Line(config.Config.UI.VehicleSize)
 }
 
-func (v *Vehicle) Drive(allTrips []*Trip, step int) (score int) {
-	// it has done every of his trips
+func (v *Vehicle) Drive(allTrips []*Trip, step int, bonus int16) (score int) {
+	// until the vehicle handles all scheduled rides
 	if v.CurrentTrip >= len(v.Trips) {
 		return
 	}
 
 	tripToGoTo := allTrips[v.Trips[v.CurrentTrip]]
+	tripToGoTo.SomeoneIsOnIt()
+
+	// first, the vehicle drives from its current intersection ([0,0] at the beginning of the simulation) to the
+	// start intersection of the next ride (unless the vehicle is already in this intersection)
+	if !v.OnRide {
+		v.DriveTo(tripToGoTo.Start.X, tripToGoTo.Start.Y)
+	}
 
 	if v.OnRide {
-		tripToGoTo.StartTrip(step)
+		tripToGoTo.StartTrip(step, bonus)
+		// then, if the current step is earlier than the earliest start of the next ride,
+		// the vehicle waits until that step
 		if int32(step) < tripToGoTo.EarliestStart {
 			tripToGoTo.WarnEarly()
 			return
 		}
+
+		// then, the vehicle drives to the finish intersection
 		v.DriveOnTrip(tripToGoTo.End.X, tripToGoTo.End.Y)
 		currentX, currentY := v.GetPosition()
+
 		if currentX == tripToGoTo.End.X && currentY == tripToGoTo.End.Y {
 			score += tripToGoTo.Finish(int32(step))
+			// then, the process repeats for the next assigned ride,
 			v.NextTrip()
 			return
 		}
 		return
 	}
 
-	tripToGoTo.SomeoneIsOnIt()
-	v.DriveTo(tripToGoTo.Start.X, tripToGoTo.Start.Y)
 	return
 }
 
@@ -107,6 +118,10 @@ func (v *Vehicle) DriveOnTrip(destinationX, destinationY int32) {
 func (v *Vehicle) DriveTo(destinationX, destinationY int32) {
 	// retrieve current position
 	currentX, currentY := v.GetPosition()
+	if destinationX == currentX && destinationY == currentY {
+		v.OnRide = true
+		return
+	}
 
 	// calculate the absolute difference between the positions
 	dx := math.Abs(float64(currentX - destinationX))

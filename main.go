@@ -134,6 +134,8 @@ func run() {
 			win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, frames))
 			frames = 0
 		}
+
+		win.SetMatrix(pixel.IM)
 		ui.DrawStepNumber(win, step)
 		ui.DrawScore(win, 0)
 		ui.DrawNumberOfVehicles(win, len(vehicles))

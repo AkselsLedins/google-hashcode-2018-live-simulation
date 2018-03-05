@@ -11,36 +11,36 @@ import (
 
 func DrawScore(win *pixelgl.Window, score int) {
 	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-	basicTxt := text.New(pixel.V(920, 685), basicAtlas)
+	txt := text.New(pixel.V(920, 685), basicAtlas)
 
-	fmt.Fprintf(basicTxt, "Score : %06d", score)
+	fmt.Fprintf(txt, "Score : %06d", score)
 
-	basicTxt.Draw(win, pixel.IM)
+	txt.Draw(win, pixel.IM)
 }
 
 func DrawStepNumber(win *pixelgl.Window, step int) {
 	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-	basicTxt := text.New(pixel.V(920, 700), basicAtlas)
+	txt := text.New(pixel.V(920, 700), basicAtlas)
 
-	fmt.Fprintf(basicTxt, "Step  : %06d", step)
+	fmt.Fprintf(txt, "Step  : %06d", step)
 
-	basicTxt.Draw(win, pixel.IM)
+	txt.Draw(win, pixel.IM)
 }
 
 func DrawNumberOfVehicles(win *pixelgl.Window, numberOfVehicles int) {
 	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-	basicTxt := text.New(pixel.V(850, 670), basicAtlas)
+	txt := text.New(pixel.V(850, 670), basicAtlas)
 
-	fmt.Fprintf(basicTxt, "Number of cars  : %04d", numberOfVehicles)
+	fmt.Fprintf(txt, "Number of cars  : %04d", numberOfVehicles)
 
-	basicTxt.Draw(win, pixel.IM)
+	txt.Draw(win, pixel.IM)
 }
 
 func DrawNumberOfTrips(win *pixelgl.Window, numberOfTrips int) {
 	basicAtlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-	basicTxt := text.New(pixel.V(850, 655), basicAtlas)
+	txt := text.New(pixel.V(850, 655), basicAtlas)
 
-	fmt.Fprintf(basicTxt, "Number of trips : %04d", numberOfTrips)
+	fmt.Fprintf(txt, "Number of trips : %04d", numberOfTrips)
 
-	basicTxt.Draw(win, pixel.IM)
+	txt.Draw(win, pixel.IM)
 }

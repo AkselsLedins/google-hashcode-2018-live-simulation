@@ -77,6 +77,7 @@ func run() {
 
 	tick := time.Tick(*frameRate)
 
+	score := 0
 	step := 0
 	lastStep := 0
 	imd := imdraw.New(nil)
@@ -121,7 +122,7 @@ func run() {
 					continue
 				}
 				if lastStep != step {
-					vehicle.Drive(trips, step)
+					score += vehicle.Drive(trips, step)
 				}
 				vehicle.AddToImd(imd)
 			}
@@ -137,7 +138,7 @@ func run() {
 
 		win.SetMatrix(pixel.IM)
 		ui.DrawStepNumber(win, step)
-		ui.DrawScore(win, 0)
+		ui.DrawScore(win, score)
 		ui.DrawNumberOfVehicles(win, len(vehicles))
 		ui.DrawNumberOfTrips(win, len(trips))
 		win.Update()

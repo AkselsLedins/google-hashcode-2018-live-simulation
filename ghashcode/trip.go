@@ -2,6 +2,7 @@ package ghashcode
 
 import (
 	"image/color"
+	"math"
 
 	"golang.org/x/image/colornames"
 
@@ -18,6 +19,9 @@ type Trip struct {
 	Start Coordinates
 	End   Coordinates
 
+	Distance int
+	Bonus    int
+
 	EarliestStart int32
 	LatestFinish  int32
 
@@ -25,6 +29,7 @@ type Trip struct {
 
 	Taken      bool
 	InProgress bool
+	Failed     bool
 
 	// precomputed values
 	GraphicLine *imdraw.IMDraw
@@ -85,12 +90,27 @@ func (t *Trip) SomeoneIsOnIt() {
 	t.Taken = true
 }
 
-func (t *Trip) StartTrip() {
+func (t *Trip) StartTrip(step int) {
+	if step == int(t.EarliestStart) {
+		t.Bonus += 2
+	}
 	t.Color = colornames.Cyan
 }
 
-func (t *Trip) Finish() {
-	t.Color = colornames.Green
+func (t *Trip) Finish(step int32) int {
+	failed := false
+	if step > t.LatestFinish {
+		failed = true
+	}
+	t.Failed = failed
+
+	if !failed {
+		t.Color = colornames.Green
+		return t.Distance + t.Bonus
+	} else {
+		t.Color = colornames.Red
+		return 0
+	}
 }
 
 func (t *Trip) WarnEarly() {
@@ -110,9 +130,12 @@ func NewTrip(id int, a, b, x, y, s, f int32) *Trip {
 	// default values
 	trip.InProgress = false
 	trip.Taken = false
+	trip.Failed = false
 	trip.Color = config.Config.UI.TripDefaultColor
 
 	// precomputed values
+	trip.Distance = int(math.Abs(float64(a-x)) + math.Abs(float64(b-y)))
+	trip.Bonus = 0
 	imd := imdraw.New(nil)
 
 	imd.Color = trip.Color

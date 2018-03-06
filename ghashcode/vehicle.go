@@ -50,37 +50,35 @@ func (v *Vehicle) Drive(allTrips []*Trip, step int, bonus int16) (score int) {
 		return
 	}
 
-	tripToGoTo := allTrips[v.Trips[v.CurrentTrip]]
-	tripToGoTo.SomeoneIsOnIt()
+	trip := allTrips[v.Trips[v.CurrentTrip]]
+	trip.SomeoneIsOnIt()
 
 	// first, the vehicle drives from its current intersection ([0,0] at the beginning of the simulation) to the
 	// start intersection of the next ride (unless the vehicle is already in this intersection)
 	if !v.OnRide {
-		v.DriveTo(tripToGoTo.Start.X, tripToGoTo.Start.Y)
-	}
-
-	if v.OnRide {
-		tripToGoTo.StartTrip(step, bonus)
-		// then, if the current step is earlier than the earliest start of the next ride,
-		// the vehicle waits until that step
-		if int32(step) < tripToGoTo.EarliestStart {
-			tripToGoTo.WarnEarly()
-			return
-		}
-
-		// then, the vehicle drives to the finish intersection
-		v.DriveOnTrip(tripToGoTo.End.X, tripToGoTo.End.Y)
-		currentX, currentY := v.GetPosition()
-
-		if currentX == tripToGoTo.End.X && currentY == tripToGoTo.End.Y {
-			score += tripToGoTo.Finish(int32(step))
-			// then, the process repeats for the next assigned ride,
-			v.NextTrip()
-			return
-		}
+		v.DriveTo(trip.Start.X, trip.Start.Y)
 		return
 	}
 
+	// vehicle is ready to drive on the trip
+	trip.StartTrip(step, bonus)
+	// then, if the current step is earlier than the earliest start of the next ride,
+	// the vehicle waits until that step
+	if int32(step) < trip.EarliestStart {
+		trip.WarnEarly()
+		return
+	}
+
+	// then, the vehicle drives to the finish intersection
+	v.DriveOnTrip(trip.End.X, trip.End.Y)
+	currentX, currentY := v.GetPosition()
+
+	if currentX == trip.End.X && currentY == trip.End.Y {
+		score += trip.Finish(int32(step))
+		// then, the process repeats for the next assigned ride,
+		v.NextTrip()
+		return
+	}
 	return
 }
 

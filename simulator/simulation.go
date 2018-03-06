@@ -28,6 +28,7 @@ type Simulation struct {
 }
 
 func (s *Simulation) Run(imd *imdraw.IMDraw) {
+	// if gui is enabled
 	if imd != nil {
 		for _, trip := range s.Trips {
 			trip.AddToImd(imd)
@@ -40,6 +41,7 @@ func (s *Simulation) Run(imd *imdraw.IMDraw) {
 			continue
 		}
 		remainingVehicles++
+		// if gui is enabled
 		if imd != nil {
 			vehicle.AddToImd(imd)
 		}

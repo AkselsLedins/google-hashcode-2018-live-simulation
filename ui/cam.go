@@ -21,12 +21,13 @@ var (
 func init() {
 	camera = new(cam)
 
-	camera.CamPos = pixel.ZV
+	camera.CamPos = pixel.V(500, 350)
 	camera.CamSpeed = 500.0
 	camera.CamZoom = 1.0
 	camera.CamZoomSpeed = 1.2
 }
 
+// Cam return the singleton cam
 func Cam() *cam {
 	return camera
 }

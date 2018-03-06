@@ -85,10 +85,14 @@ func run() {
 
 		// reset the matrix
 		win.SetMatrix(pixel.IM)
+
+		// drall the UI
 		ui.DrawStepNumber(win, simulation.Step)
 		ui.DrawScore(win, simulation.Score)
 		ui.DrawNumberOfVehicles(win, len(simulation.Vehicles))
 		ui.DrawNumberOfTrips(win, len(simulation.Trips))
+		ui.DrawStartHint(win)
+
 		win.Update()
 	}
 

@@ -5,6 +5,7 @@ import (
 	"math"
 
 	config "github.com/AkselsLedins/google-hashcode-2018-live-simulation/config"
+	"github.com/AkselsLedins/google-hashcode-2018-live-simulation/ui"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -50,7 +51,7 @@ type Trip struct {
 func (t *Trip) AddToImd(imd *imdraw.IMDraw) {
 	// we only show taken trips for performance
 	// TODO a way to desactivate this
-	if !t.Taken {
+	if !t.Taken && !ui.Options().ShowAllTrips {
 		return
 	}
 

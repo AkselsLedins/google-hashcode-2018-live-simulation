@@ -10,6 +10,10 @@ func (s *Simulation) HandleEvents(win *pixelgl.Window, dt float64) {
 		s.Toggle()
 	}
 
+	if win.JustPressed(pixelgl.KeyT) {
+		ui.Options().ShowAllTrips = !ui.Options().ShowAllTrips
+	}
+
 	if win.Pressed(pixelgl.KeyLeft) {
 		ui.Cam().CamPos.X -= ui.Cam().CamSpeed * dt
 	}

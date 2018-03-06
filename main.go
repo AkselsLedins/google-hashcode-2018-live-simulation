@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math"
 	"time"
 
 	config "github.com/AkselsLedins/google-hashcode-2018-live-simulation/config"
@@ -27,11 +26,6 @@ var (
 
 	outputFile *string
 	inputFile  *string
-
-	camPos       = pixel.ZV
-	camSpeed     = 500.0
-	camZoom      = 1.0
-	camZoomSpeed = 1.2
 
 	simulation *simulator.Simulation
 )
@@ -70,24 +64,11 @@ func run() {
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
-		cam := pixel.IM.Scaled(camPos, camZoom).Moved(win.Bounds().Center().Sub(camPos))
-		win.SetMatrix(cam)
-		if win.JustPressed(pixelgl.KeySpace) {
-			simulation.Toggle()
-		}
-		if win.Pressed(pixelgl.KeyLeft) {
-			camPos.X -= camSpeed * dt
-		}
-		if win.Pressed(pixelgl.KeyRight) {
-			camPos.X += camSpeed * dt
-		}
-		if win.Pressed(pixelgl.KeyDown) {
-			camPos.Y -= camSpeed * dt
-		}
-		if win.Pressed(pixelgl.KeyUp) {
-			camPos.Y += camSpeed * dt
-		}
-		camZoom *= math.Pow(camZoomSpeed, win.MouseScroll().Y)
+		// set the camera for the scene
+		win.SetMatrix(ui.Cam().GetMatrix(win))
+
+		// handle user inputs
+		simulation.HandleEvents(win, dt)
 
 		select {
 		case <-tick:
@@ -102,6 +83,7 @@ func run() {
 			frames = 0
 		}
 
+		// reset the matrix
 		win.SetMatrix(pixel.IM)
 		ui.DrawStepNumber(win, simulation.Step)
 		ui.DrawScore(win, simulation.Score)

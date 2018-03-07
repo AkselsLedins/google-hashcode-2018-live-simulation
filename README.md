@@ -39,7 +39,7 @@ $> make
 #### Example with a Graphic Interface
 
 ```
-$> ./google-hashcode-2018 -o resources/output-files/b.out -i resources/input-files/b_should_be_easy.in
+$> ./google-hash-code-2018 -o resources/output-files/b.out -i resources/input-files/b_should_be_easy.in
 ```
 
 

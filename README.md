@@ -11,6 +11,37 @@
 
 </div>
 
+## Introduction
+
+Some context on the competition:
+
+We are given a list of pre-booked rides in a city and a fleet of self-driving vehicles. The objective of the competition is to assign the rides to vehicles, so
+that riders get to their destinations on time.
+
+[The competition subject](resources/subject.pdf)
+
+#### Guide to better understanding the animation
+
+| Illustration | Explanation                                                                        |   |
+|--------------|------------------------------------------------------------------------------------|---|
+|
+![driver](screenshots/legend/driver.png)          | A red dot is a car.                                                                 |   |
+|
+![failed-trip](screenshots/legend/failed-trip.png)  | The red line is a representation of a failed trip. The car arrived late.           |   |
+|
+![will-complete](screenshots/legend/driver-on-ride-1.png) ![Preview](screenshots/legend/driver-on-ride-2.png) ![Preview](screenshots/legend/driver-on-ride-3.png)      | A blue line is a trip in progress. You can see the car going through.               |   |
+|
+![will-complete](screenshots/legend/driver-will-complete-1.png) ![Preview](screenshots/legend/driver-will-complete-2.png)    | A green line is a completed trip                                                   |   |
+|
+![assigned](screenshots/legend/assigned-ride.png)     | A grey line means that a driver is assigned to the trip                            |   |
+|
+![waiting](screenshots/legend/driver-waiting-at-start.png)       | A yellow line means that the driver is ready but it's too early to start the ride. |   |
+
+**Important:** we are only showing the assigned trips. If you press [T] you can toggle off/on the unassigned ones.
+
+<img alt="off" src="screenshots/legend/toggle-off-all-trips.png" width="50%" align="left">
+<img alt="on" src="screenshots/legend/toggle-on-all-trips.png" width="50%">
+
 ## Preview
 
 <div align="center">

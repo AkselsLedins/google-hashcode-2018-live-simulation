@@ -33,8 +33,10 @@ that riders get to their destinations on time.
 
 **Important:** we are only showing the assigned trips. If you press [T] you can toggle off/on the unassigned ones.
 
-<img alt="off" src="screenshots/legend/toggle-off-all-trips.png" width="50%" align="left">
-<img alt="on" src="screenshots/legend/toggle-on-all-trips.png" width="50%">
+<div>
+<img alt="off" src="screenshots/legend/toggle-off-all-trips.png" width="45%" align="right" >
+<img alt="on" src="screenshots/legend/toggle-on-all-trips.png" width="45%" >
+</div>
 
 ## Preview
 

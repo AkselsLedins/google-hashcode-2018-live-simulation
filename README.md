@@ -54,6 +54,13 @@ $> make deps
 $> make
 ```
 
+### Requirements
+
+* OpenGL see [github.com/faiface/glhf](https://github.com/faiface/glhf#which-version-of-opengl-does-glhf-use)
+* [github.com/faiface/pixel](https://github.com/faiface/pixel#requirements)
+* [github.com/go-gl/glfw/v3.2/glfw](https://github.com/go-gl/glfw#installation)
+* `go>=1.8.1`
+
 ## Running
 
 

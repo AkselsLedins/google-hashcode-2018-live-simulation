@@ -3,6 +3,7 @@
 
 <div align="center">
 
+![goreport](https://goreportcard.com/badge/github.com/AkselsLedins/google-hashcode-2018-live-simulation)
 [![CircleCI](https://circleci.com/gh/AkselsLedins/google-hashcode-2018-live-simulation.svg?style=shield)](https://circleci.com/gh/AkselsLedins/google-hashcode-2018-live-simulation)
 ![License](https://img.shields.io/github/license/AkselsLedins/google-hashcode-2018-live-simulation.svg)
 ![Forks](https://img.shields.io/github/forks/AkselsLedins/google-hashcode-2018-live-simulation.svg)
